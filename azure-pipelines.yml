@@ -9,11 +9,33 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+variables:
+  - name: appName
+    value: 'duuksawhmoodle01'
+  - name: webAppResourceGroupName
+    value: 'du-uks-awh-arc-moodle01'
+  - name: runtimeStack
+    value: 'PHP|8.1'
+  - name: azureSubscription
+    value: 'svc-con-awh-01'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+steps:
+  - task: AzureRmWebAppDeployment@4
+    inputs:
+      ConnectionType: 'AzureRM'
+      appType: 'webAppLinux'
+      WebAppName: '$(appName)'
+      ResourceGroupName: '$(webAppResourceGroupName)'
+      azureSubscription: '$(azureSubscription)'
+      deployToSlotOrASE: true
+      SlotName: 'production'
+      RuntimeStack: '$(runtimeStack)'
+      #StartupCommand: ''
+      ScriptType: 'Inline Script'
+      InlineScript: |
+        echo "Working directory is $(pwd)"
+        export WORKDIR=$(pwd)
+        echo "php is $(which php)"
+        echo "\$PYTHONPATH is $PYTHONPATH"
+        echo "\$PATH is $PATH"
+
