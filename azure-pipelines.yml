@@ -46,8 +46,7 @@ steps:
       packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
       ScriptType: 'Inline Script'
       InlineScript: |
-        echo "Working directory is $(pwd)"
         export WORKDIR=$(pwd)
+        echo "Working directory is ${WORKDIR}"
         echo "php is $(which php)"
-        echo "\$PATH is $PATH"
-
+        mv moodle/* .
