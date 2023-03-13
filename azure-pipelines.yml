@@ -6,6 +6,8 @@
 trigger:
 - main
 
+pr: none
+
 pool:
   name: Default
   demands:
@@ -27,13 +29,21 @@ variables:
     value: 'https://download.moodle.org/download.php/direct/stable401/moodle-4.1.2.zip'
 
 steps:
+# See https://docs.moodle.org/401/en/Installing_Moodle#Download_and_copy_files_into_place
+# Alternate git download: `git clone -b MOODLE_{{Version3}}_STABLE git://git.moodle.org/moodle.git`
   - script: |
       echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       curl -L -o "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" "$(zipDistribution)"
-      unzip -t "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+      unzip -qt "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
     displayName: Get Moodle Release and place in artefact staging directory
 
   - task: AzureRmWebAppDeployment@4
+    env:
+      DB_HOST: $(DB_HOST)
+      DB_NAME: $(DB_NAME)
+      DB_USER: $(DB_USER)
+      DB_PASS: $(DB_PASS)
+
     inputs:
       ConnectionType: 'AzureRM'
       appType: 'webAppLinux'
@@ -48,5 +58,25 @@ steps:
       InlineScript: |
         export WORKDIR=$(pwd)
         echo "Working directory is ${WORKDIR}"
-        echo "php is $(which php)"
+        
         mv moodle/* .
+        rmdir moodle
+        mv config-dist.php config.php
+        
+        # Update moodle config file
+        sed -i '/$CFG->reverseproxy/s/^\/\/[ ]*//g' config.php
+        sed -i -E "/$CFG->dbhost\s*= '[a-z]+';/s/localhost/${DB_HOST}/" config.php
+        sed -i -E "/$CFG->dbname\s*= '[a-z]+';/s/moodle/${DB_NAME}/" config.php
+        sed -i -E "/$CFG->dbuser\s*= '[a-z]+';/s/username/${DB_USER}/" config.php
+        sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
+        
+        # Test that configuration has been updated
+        cat config.php | grep 'CFG\->reverseproxy'
+        cat config.php | grep 'CFG\->dbhost'
+        cat config.php | grep 'CFG\->dbname'
+        cat config.php | grep 'CFG\->dbuser'
+        cat config.php | grep 'CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
+        
+        # Set directory read-only for www-data user
+        chown -R root $WORKDIR/*
+        chmod -R 0755 $WORKDIR/*
