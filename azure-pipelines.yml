@@ -32,7 +32,7 @@ variables:
 
 steps:
 # See https://docs.moodle.org/401/en/Installing_Moodle#Download_and_copy_files_into_place
-# Alternate git download: `git clone -b MOODLE_{{Version3}}_STABLE git://git.moodle.org/moodle.git`
+# Alternate git download: `git clone -b MOODLE_{{Version3}}_STABLE git://git.moodle.org/moodle.
   - script: |
       set -e
       
@@ -40,6 +40,7 @@ steps:
       curl -L -o moodle.zip "$(zipDistribution)"
       unzip -q moodle.zip
       
+      cp * moodle/
       cd moodle
       mv config-dist.php config.php
     
@@ -82,9 +83,5 @@ steps:
         export WORKDIR=$(pwd)
         echo "Working directory is ${WORKDIR}"
         echo "I am $(whoami)"
-        
+             
         ls -lA
-        
-        # Set directory read-only for www-data user
-        chown -R root $WORKDIR/*
-        chmod -R 0755 $WORKDIR/*
