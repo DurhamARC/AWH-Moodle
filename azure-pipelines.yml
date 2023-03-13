@@ -24,7 +24,7 @@ variables:
   - name: webAppResourceGroupName
     value: 'du-uks-awh-arc-moodle01'
   - name: runtimeStack
-    value: 'PHP|8.1'
+    value: 'PHP|7.4'
   - name: azureSubscription
     value: 'svc-con-awh-01'
   - name: zipDistribution
