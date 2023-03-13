@@ -17,6 +17,8 @@ resources:
   - repo: self
 
 variables:
+  - group: arc-moodle01
+
   - name: appName
     value: 'duuksawhmoodle01'
   - name: webAppResourceGroupName
@@ -43,7 +45,6 @@ steps:
       DB_NAME: $(DB_NAME)
       DB_USER: $(DB_USER)
       DB_PASS: $(DB_PASS)
-
     inputs:
       ConnectionType: 'AzureRM'
       appType: 'webAppLinux'
@@ -58,6 +59,10 @@ steps:
       InlineScript: |
         export WORKDIR=$(pwd)
         echo "Working directory is ${WORKDIR}"
+        echo "I am $(whoami)"
+        
+        chown -R $(whoami) $WORKDIR
+        chmod -R 0755 $WORKDIR
         
         mv moodle/* .
         rmdir moodle
