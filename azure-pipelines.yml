@@ -55,7 +55,7 @@ steps:
       cat config.php | grep 'CFG\->dbuser'
       cat config.php | grep 'CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
       
-      zip -0 -r "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" *
+      zip -0 -r -q "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" *
       unzip -qt "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
 
     displayName: Get Moodle Release and place in artefact staging directory
