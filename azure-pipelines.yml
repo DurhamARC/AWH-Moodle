@@ -50,6 +50,7 @@ steps:
       sed -i -E "/$CFG->dbname\s*= '[a-z]+';/s/moodle/${DB_NAME}/" config.php
       sed -i -E "/$CFG->dbuser\s*= '[a-z]+';/s/username/${DB_USER}/" config.php
       sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
+      sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/home\/example\/moodledata/tmp/" config.php
     
       cat config.php | grep 'CFG\->reverseproxy'
       cat config.php | grep 'CFG\->dbhost'
