@@ -24,12 +24,13 @@ variables:
   - name: azureSubscription
     value: 'svc-con-awh-01'
   - name: zipDistribution
-    value: 'https://download.moodle.org/download.php/stable401/moodle-4.1.2.zip'
+    value: 'https://download.moodle.org/download.php/direct/stable401/moodle-4.1.2.zip'
 
 steps:
   - script: |
       echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
-      curl -o "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" "$(zipDistribution)"
+      curl -L -o "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" "$(zipDistribution)"
+      unzip -t "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
     displayName: Get Moodle Release and place in artefact staging directory
 
   - task: AzureRmWebAppDeployment@4
