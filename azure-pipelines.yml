@@ -40,7 +40,7 @@ steps:
       curl -L -o moodle.zip "$(zipDistribution)"
       unzip -q moodle.zip
       
-      cp * moodle/
+      cp *.php moodle/
       cd moodle
       mv config-dist.php config.php
     
