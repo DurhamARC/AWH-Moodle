@@ -24,6 +24,9 @@ steps:
       echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       curl -o "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" \
         https://download.moodle.org/download.php/stable401/moodle-4.1.2.zip
+      cd $(Build.ArtifactStagingDirectory)
+      mkdir ../s/release/
+      cp $(Build.BuildId).zip ../s/release/
     displayName: Get Moodle Release and place in artefact staging directory
 
   - task: AzureRmWebAppDeployment@4
