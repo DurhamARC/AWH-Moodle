@@ -62,7 +62,7 @@ steps:
       unzip -qt "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
 
     displayName: Get Moodle Release and place in artefact staging directory
-    variables:
+    env:
       DB_HOST: $(DB_HOST)
       DB_NAME: $(DB_NAME)
       DB_USER: $(DB_USER)
