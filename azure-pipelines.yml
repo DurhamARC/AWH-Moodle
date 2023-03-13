@@ -35,6 +35,7 @@ steps:
 # Alternate git download: `git clone -b MOODLE_{{Version3}}_STABLE git://git.moodle.org/moodle.
   - script: |
       set -e
+      ls -lA
       
       echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       curl -L -o moodle.zip "$(zipDistribution)"
@@ -55,9 +56,6 @@ steps:
       cat config.php | grep 'CFG\->dbname'
       cat config.php | grep 'CFG\->dbuser'
       cat config.php | grep 'CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
-      
-      zip -0 -r -q "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" *
-      unzip -qt "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
 
     displayName: Get Moodle Release and place in artefact staging directory
     env:
@@ -65,6 +63,15 @@ steps:
       DB_NAME: $(DB_NAME)
       DB_USER: $(DB_USER)
       DB_PASS: $(DB_PASS)
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/moodle'
+      includeRootFolder: false
+      archiveType: "zip"
+      archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+      replaceExistingArchive: true
+      displayName: "Archive Files"
 
   - task: AzureRmWebAppDeployment@4
     inputs:
@@ -76,7 +83,7 @@ steps:
       deployToSlotOrASE: true
       SlotName: 'production'
       RuntimeStack: '$(runtimeStack)'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)/*.zip'
+      packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
       ScriptType: 'Inline Script'
       InlineScript: |
         set -e
