@@ -38,26 +38,23 @@ steps:
       
       echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       curl -L -o moodle.zip "$(zipDistribution)"
-      unzip moodle.zip
-      cd moodle
+      unzip -q moodle.zip
       
+      cd moodle
       mv config-dist.php config.php
     
-      # Update moodle config file
       sed -i '/$CFG->reverseproxy/s/^\/\/[ ]*//g' config.php
       sed -i -E "/$CFG->dbhost\s*= '[a-z]+';/s/localhost/${DB_HOST}/" config.php
       sed -i -E "/$CFG->dbname\s*= '[a-z]+';/s/moodle/${DB_NAME}/" config.php
       sed -i -E "/$CFG->dbuser\s*= '[a-z]+';/s/username/${DB_USER}/" config.php
       sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
     
-      # Test that configuration has been updated
       cat config.php | grep 'CFG\->reverseproxy'
       cat config.php | grep 'CFG\->dbhost'
       cat config.php | grep 'CFG\->dbname'
       cat config.php | grep 'CFG\->dbuser'
       cat config.php | grep 'CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
       
-      # Create our build artefact
       zip -0 -r "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" *
       unzip -qt "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
 
