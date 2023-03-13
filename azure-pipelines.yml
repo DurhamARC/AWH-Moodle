@@ -20,6 +20,12 @@ variables:
     value: 'svc-con-awh-01'
 
 steps:
+  - script: |
+      echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
+      curl -o "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip" \
+        https://download.moodle.org/download.php/stable401/moodle-4.1.2.zip
+    displayName: Get Moodle Release and place in artefact staging directory
+
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
@@ -30,6 +36,7 @@ steps:
       deployToSlotOrASE: true
       SlotName: 'production'
       RuntimeStack: '$(runtimeStack)'
+      packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
       #StartupCommand: ''
       ScriptType: 'Inline Script'
       InlineScript: |
