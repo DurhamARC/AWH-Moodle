@@ -45,6 +45,7 @@ jobs:
       echo Downloading Moodle from "$(zipDistribution)"
       curl --connect-timeout 20 --max-time 60 -L -o dist.zip "$(zipDistribution)"
       
+      echo "Extracting folder..."
       unzip -q -j dist.zip
       rm dist.zip
       
