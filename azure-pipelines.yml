@@ -50,7 +50,7 @@ steps:
       sed -i -E "/$CFG->dbname\s*= '[a-z]+';/s/moodle/${DB_NAME}/" config.php
       sed -i -E "/$CFG->dbuser\s*= '[a-z]+';/s/username/${DB_USER}/" config.php
       sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
-      sed -i -E "/$CFG->dataroot\s*= '.+';/s/home\/example\/moodledata/mnt\/arc-moodle/" config.php
+      sed -i -E "/$CFG->dataroot\s*= '.+';/s/\/home\/example\/moodledata/${DATA_ROOT}/" config.php
     
       cat config.php | grep '^\$CFG\->reverseproxy'
       cat config.php | grep '^\$CFG\->dbhost'
@@ -65,6 +65,7 @@ steps:
       DB_NAME: $(DB_NAME)
       DB_USER: $(DB_USER)
       DB_PASS: $(DB_PASS)
+      DATA_ROOT: $(DATA_ROOT)
 
   - task: ArchiveFiles@2
     inputs:
