@@ -52,12 +52,12 @@ steps:
       sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
       sed -i -E "/$CFG->dataroot\s*= '.+';/s/home\/example\/moodledata/mnt\/arc-moodle/" config.php
     
-      cat config.php | grep 'CFG\->reverseproxy'
-      cat config.php | grep 'CFG\->dbhost'
-      cat config.php | grep 'CFG\->dbname'
-      cat config.php | grep 'CFG\->dbuser'
-      cat config.php | grep 'CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
-      cat config.php | grep 'CFG\->dataroot'
+      cat config.php | grep '^\$CFG\->reverseproxy'
+      cat config.php | grep '^\$CFG\->dbhost'
+      cat config.php | grep '^\$CFG\->dbname'
+      cat config.php | grep '^\$CFG\->dbuser'
+      cat config.php | grep '^\$CFG\->dbpass' | sed "s/${DB_PASS}/*******/"
+      cat config.php | grep '^\$CFG\->dataroot'
 
     displayName: Get Moodle Release and place in artefact staging directory
     env:
