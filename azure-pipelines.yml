@@ -50,7 +50,7 @@ jobs:
       rm dist.zip
       
       DIR=$(ls)
-      (cd $(ls); mv * ../)
+      (cd $(ls); mv * .* ../)
       rmdir $DIR
       
       cp ../*.php .
