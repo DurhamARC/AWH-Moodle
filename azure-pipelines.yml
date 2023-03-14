@@ -44,13 +44,15 @@ steps:
       cp *.php moodle/
       cd moodle
       mv config-dist.php config.php
-    
+      
+      ESC_DATA_ROOT=$(printf '%s\n' "$DATA_ROOT" | sed -e 's/[\/&]/\\&/g')
+      
       sed -i '/$CFG->reverseproxy/s/^\/\/[ ]*//g' config.php
       sed -i -E "/$CFG->dbhost\s*= '[a-z]+';/s/localhost/${DB_HOST}/" config.php
       sed -i -E "/$CFG->dbname\s*= '[a-z]+';/s/moodle/${DB_NAME}/" config.php
       sed -i -E "/$CFG->dbuser\s*= '[a-z]+';/s/username/${DB_USER}/" config.php
       sed -i -E "/$CFG->dbpass\s*= '[a-z]+';/s/password/${DB_PASS}/" config.php
-      sed -i -E "/$CFG->dataroot\s*= '.+';/s/\/home\/example\/moodledata/${DATA_ROOT}/" config.php
+      sed -i -E "/$CFG->dataroot\s*= '.+';/s/\/home\/example\/moodledata/${ESC_DATA_ROOT}/" config.php
       sed -i -E "/$CFG->wwwroot\s*= '.+';/s/http:\/\/example.com\/moodle/${WWW_ROOT}/" config.php
     
       cat config.php | grep '^\$CFG\->reverseproxy'
