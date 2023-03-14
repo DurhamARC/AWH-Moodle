@@ -91,7 +91,7 @@ steps:
       RuntimeStack: '$(runtimeStack)'
       packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
       ScriptType: 'Inline Script'
-      AppSettings: '${{ parameters.webapp_settings }} -DATA_ROOT $(DATA_ROOT)'
+      AppSettings: '$(parameters.webapp_settings) -DATA_ROOT $(DATA_ROOT)'
       InlineScript: |
         set -e
         export WORKDIR=$(pwd)
