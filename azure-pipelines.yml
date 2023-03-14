@@ -41,7 +41,7 @@ steps:
       cd dist
       
       echo Downloading Moodle from "$(zipDistribution)"
-      curl -L -o dist.zip "$(zipDistribution)"
+      curl --connect-timeout 20 --max-time 60 -L -o dist.zip "$(zipDistribution)"
       
       unzip -q -j dist.zip
       rm dist.zip
