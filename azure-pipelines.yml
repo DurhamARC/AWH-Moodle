@@ -30,7 +30,9 @@ variables:
   - name: zipDistribution
     value: 'https://download.moodle.org/download.php/direct/stable401/moodle-4.1.2.zip'
 
-steps:
+jobs:
+- job: Deployment
+  steps:
 # See https://docs.moodle.org/401/en/Installing_Moodle#Download_and_copy_files_into_place
 # Alternate git download: `git clone -b MOODLE_{{Version3}}_STABLE git://git.moodle.org/moodle.
   - script: |
