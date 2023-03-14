@@ -91,14 +91,14 @@ steps:
       RuntimeStack: '$(runtimeStack)'
       packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
       ScriptType: 'Inline Script'
+      AppSettings: '${{ parameters.webapp_settings }} -DATA_ROOT $(DATA_ROOT)'
       InlineScript: |
         set -e
         export WORKDIR=$(pwd)
         echo "Working directory is ${WORKDIR}"
         echo "I am $(whoami)"
              
-        ls -lA
+        ls -lA | head
+        echo "$(ls -lA | wc -l) files total"
         ls -lA ${DATA_ROOT}
         touch ${DATA_ROOT}/test
-    env:
-      DATA_ROOT: $(DATA_ROOT)
