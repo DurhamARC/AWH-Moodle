@@ -46,8 +46,12 @@ jobs:
       curl --connect-timeout 20 --max-time 60 -L -o dist.zip "$(zipDistribution)"
       
       echo "Extracting folder..."
-      unzip -q -j dist.zip
+      unzip -q dist.zip
       rm dist.zip
+      
+      DIR=$(ls)
+      (cd $(ls); mv * ../)
+      rmdir $DIR
       
       cp ../*.php .
       mv config-dist.php config.php
