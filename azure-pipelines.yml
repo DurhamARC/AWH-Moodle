@@ -37,12 +37,16 @@ steps:
       set -e
       ls -lA
       
-      echo Downloading Moodle to "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
-      curl -L -o moodle.zip "$(zipDistribution)"
-      unzip -q moodle.zip
+      mkdir -p dist
+      cd dist
       
-      cp *.php moodle/
-      cd moodle
+      echo Downloading Moodle from "$(zipDistribution)"
+      curl -L -o dist.zip "$(zipDistribution)"
+      
+      unzip -q -j dist.zip
+      rm dist.zip
+      
+      cp ../*.php .
       mv config-dist.php config.php
       
       ESC_DATA_ROOT=$(printf '%s\n' "${DATA_ROOT}" | sed -e 's/[\/&]/\\&/g')      
@@ -64,7 +68,7 @@ steps:
       cat config.php | grep '^\$CFG\->dataroot'
       cat config.php | grep '^\$CFG\->wwwroot'
 
-    displayName: Get Moodle Release and place in artefact staging directory
+    displayName: Place Moodle in staging directory
     env:
       DB_HOST: $(DB_HOST)
       DB_NAME: $(DB_NAME)
@@ -74,27 +78,27 @@ steps:
       WWW_ROOT: $(WWW_ROOT)
 
   - task: ArchiveFiles@2
+    displayName: "Archive Files"
     inputs:
-      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/moodle'
+      rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist'
       includeRootFolder: false
       archiveType: "zip"
       archiveFile: "$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip"
       replaceExistingArchive: true
-      displayName: "Archive Files"
 
   - task: AzureRmWebAppDeployment@4
     inputs:
       ConnectionType: 'AzureRM'
       appType: 'webAppLinux'
+      deployToSlotOrASE: true
+      SlotName: 'production'
       WebAppName: '$(appName)'
       ResourceGroupName: '$(webAppResourceGroupName)'
       azureSubscription: '$(azureSubscription)'
-      deployToSlotOrASE: true
-      SlotName: 'production'
       RuntimeStack: '$(runtimeStack)'
       packageForLinux: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-      ScriptType: 'Inline Script'
       AppSettings: '-DATA_ROOT $(DATA_ROOT)'
+      ScriptType: 'Inline Script'
       InlineScript: |
         set -e
         export WORKDIR=$(pwd)
