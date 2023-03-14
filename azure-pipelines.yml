@@ -98,3 +98,7 @@ steps:
         echo "I am $(whoami)"
              
         ls -lA
+        ls -lA ${DATA_ROOT}
+        touch ${DATA_ROOT}/test
+    env:
+      DATA_ROOT: $(DATA_ROOT)
